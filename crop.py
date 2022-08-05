@@ -9,8 +9,8 @@ While loop inside a for loop splitting images into a frames.
 
 
 def frame_video():
-    directory_videos = '/home/lab/PycharmProjects/nagrania/'
-    directory_frames = '/home/lab/PycharmProjects/nagrania_frames/'
+    directory_videos = 'C:/Users/Krystian/Desktop/crop_process/nagrania/'
+    directory_frames = 'C:/Users/Krystian/Desktop/crop_process/nagrania_frames/'
     count = 0
 
     for video in os.listdir(directory_videos):
@@ -20,34 +20,23 @@ def frame_video():
         while success:
             cv2.imwrite(directory_frames + 'frame%d.png' % count, image)
             success, image = video.read()
-            print('Read a new frame: ', success)
+            # print('Read a new frame: ', success)
             count += 1
 
 
-    # vidcap = cv2.VideoCapture('FLIR1234.mp4')
-    # success, image = vidcap.read()
-    # # count = 0
-    #
-    # while success:
-    #     cv2.imwrite('/home/lab/PycharmProjects/frames/frame%d.jpg' % count, image)  # save frame as JPEG file
-    #     success, image = vidcap.read()
-    #     print('Read a new frame: ', success)
-    #     count += 1
-
-
 def crop_image():
-    directory = '/home/lab/PycharmProjects/nagrania_frames/'
+    directory_source = 'C:/Users/Krystian/Desktop/crop_process/nagrania_frames/'
     x, y, h, w = 70, 75, 695, 995  # set coordinates that you want
 
-    for files in os.listdir(directory):
-        img = cv2.imread(directory + files)
+    for files in os.listdir(directory_source):
+        img = cv2.imread(directory_source + files)
         crop_img = img[y:h, x:w]
-        cv2.imwrite('/home/lab/PycharmProjects/cropped/' + files, crop_img)
+        cv2.imwrite('C:/Users/Krystian/Desktop/crop_process/cropped/' + files, crop_img)
         print(f'Cropped file: {files}')
+    print('Crop - done.')
 
-
-print('Start split video into a frames. . .')
-frame_video()
+# print('Start split video into a frames. . .')
+# frame_video()
 print('Start cropping. . .')
 crop_image()
 print('COMPLETED!')
