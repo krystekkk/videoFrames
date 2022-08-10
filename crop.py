@@ -25,18 +25,25 @@ def frame_video():
 
 
 def crop_image():
-    directory_source = 'C:/Users/Krystian/Desktop/crop_process/nagrania_frames/'
+    directory = '/home/lab/PycharmProjects/nagrania_frames/'
+    dir = os.listdir(directory)
     x, y, h, w = 70, 75, 695, 995  # set coordinates that you want
 
-    for files in os.listdir(directory_source):
-        img = cv2.imread(directory_source + files)
-        crop_img = img[y:h, x:w]
-        cv2.imwrite('C:/Users/Krystian/Desktop/crop_process/cropped/' + files, crop_img)
-        print(f'Cropped file: {files}')
-    print('Crop - done.')
+    for index_lista, name in enumerate(dir):
+        if index_lista % 5 == 0:
+            print(index_lista)
+            img = cv2.imread(directory + name)
+            crop_img = img[y:h, x:w]
+            cv2.imwrite('/home/lab/PycharmProjects/cropped/' + name, crop_img)
 
-# print('Start split video into a frames. . .')
-# frame_video()
+    # for files in os.listdir(directory):
+    #     img = cv2.imread(directory + files)
+    #     crop_img = img[y:h, x:w]
+    #     cv2.imwrite('/home/lab/PycharmProjects/cropped/' + files, crop_img)
+    #     print(f'Cropped file: {files}')
+
+print('Start split video into a frames. . .')
+frame_video()
 print('Start cropping. . .')
 crop_image()
 print('COMPLETED!')
