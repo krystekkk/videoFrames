@@ -36,11 +36,6 @@ def crop_image():
             crop_img = img[y:h, x:w]
             cv2.imwrite('/home/lab/PycharmProjects/cropped/' + name, crop_img)
 
-    # for files in os.listdir(directory):
-    #     img = cv2.imread(directory + files)
-    #     crop_img = img[y:h, x:w]
-    #     cv2.imwrite('/home/lab/PycharmProjects/cropped/' + files, crop_img)
-    #     print(f'Cropped file: {files}')
 
 print('Start split video into a frames. . .')
 frame_video()
