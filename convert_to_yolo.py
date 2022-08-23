@@ -1,15 +1,14 @@
 import pandas as pd
-from csv import reader, DictReader
+from csv import DictReader
 
 
 def file_parser():
-    directory = '/home/lab/PycharmProjects/data/data.txt'
+    directory = '/home/lab/PycharmProjects/data_final/labeling-export-krystian/testing/bounding_boxes.txt'
     file = open(directory, 'r+')
     line = file.readline()
 
     data = pd.DataFrame(eval(line))
-    # data.to_json('/home/lab/PycharmProjects/data/json_data.json')
-    data.to_csv('/home/lab/PycharmProjects/data/csv_data.csv')
+    data.to_csv('/home/lab/PycharmProjects/data_final/labeling-export-krystian/testing/bounding_boxes.csv')
 
 
 def coordinate_classifier(label):
@@ -25,54 +24,48 @@ def coordinate_classifier(label):
     return value
 
 
-def csv_reader():
+def yolo_converter(list_of_data):
     image_width = 930
     image_height = 570
-    object_classificator = {'person': 0, 'car': 1, 'tram': 2, 'airplane': 3}
+    factor = 2.0
 
-    with open('/home/lab/PycharmProjects/data/csv_data.csv', 'r') as read_object:
+    label = list_of_data[0]
+    x = list_of_data[1]
+    y = list_of_data[2]
+    w = list_of_data[3]
+    h = list_of_data[4]
+    cx = x + (w / factor)
+    cy = y + (h / factor)
+    var1 = cx / image_width
+    var2 = cy / image_height
+    var3 = w / image_width
+    var4 = h / image_height
+    lbl = coordinate_classifier(label)
+
+    # print(f'{lbl} {var1} {var2} {var3} {var4}')
+    return "{} {} {} {} {}".format(lbl, var1, var2, var3, var4)
+
+
+def csv_reader():
+    with open('/home/lab/PycharmProjects/data_final/labeling-export-krystian/testing/bounding_boxes.csv', 'r') as read_object:
         csv_read = DictReader(read_object)
         for row in csv_read:
             if row['boundingBoxes']:
                 data = row['boundingBoxes']
                 data_eval = eval(data)
-                # print(type(data_eval))
                 if type(data_eval) == dict:
-                    # print('DICT')
                     my_values = list(data_eval.values())
-                    print(my_values)
-                    label = my_values[0]
-                    x = my_values[1]
-                    y = my_values[2]
-                    w = my_values[3]
-                    h = my_values[4]
-                    cx = x + (w / 2.0)
-                    cy = y + (h / 2.0)
-                    var1 = cx / image_width
-                    var2 = cy / image_height
-                    var3 = w / image_width
-                    var4 = h / image_height
-
-                    lbl = coordinate_classifier(label)
-
-                    print(f'YOLO coordinates: {lbl} {var1} {var2} {var3} {var4}')
+                    yolo_converter(my_values)
+                    with open(f"/home/lab/PycharmProjects/data_final/labeling-export-krystian/testing/{row['frames']}.txt", "w") as txt_file:
+                        txt_file.write(f'{yolo_converter(my_values)}')
                 else:
-                    # print('TUPLE')
-                    """TODO: """
-                    pass
+                    my_data = list(data_eval)
+                    with open(f"/home/lab/PycharmProjects/data_final/labeling-export-krystian/testing/{row['frames']}.txt", "w") as txt_file:
+                        for dictionary in my_data:
+                            sublist = list(dictionary.values())
+                            yolo_converter(sublist)
+                            txt_file.write(f'{yolo_converter(sublist)}\n')
 
 
-# file_parser()
+file_parser()
 csv_reader()
-
-
-"""
-    Procedura: 
-    1. Zmiana zawartości pliku na obiekt DataFrame.
-    2. Zapisanie zawartości zmiennej DataFrame do pliku CSV.
-    3. W pliku CSV usunąć niepotrzebne kolumny.
-    4. W pliku CSV za pomocą narzędzia znajdź usunąć przedni oraz tylny nawias kwadratowy 
-       z kolumny boundingBoxes (bo jest szybciej).
-    5. Potraktować kolumnę boundingBoxes funkcją eval(), żeby otrzymać słownik lub tuplę.
-    6. Przeszukać słowniki w celu wyekstraktowania danych.
-"""
