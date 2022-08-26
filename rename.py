@@ -2,10 +2,10 @@ import os
 
 
 def rename():
-    directory = '/home/lab/PycharmProjects/yolo/dataset/images/val'
+    directory = r"C:\Users\Krystian\Desktop\dataset\labels\val"
     dir = os.listdir(directory)
     char = '.'
-    ch = '.jpg'
+    ch = '.txt'
 
     for file in dir:
         old_name = os.path.join(directory, file)
